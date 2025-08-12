@@ -1,0 +1,23 @@
+version: "3.9"
+
+services:
+  kanban:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        # variáveis lidas no build do Vite
+        VITE_API_URL: "http://kanban.local"
+    container_name: kanban
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    networks:
+      psweb-network:
+        aliases:
+          - kanban
+
+networks:
+  psweb-network:
+    external: true
+    name: mysql_psweb-network

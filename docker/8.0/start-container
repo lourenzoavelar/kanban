@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+if [ ! -z "$WWWUSER" ]; then
+    usermod -u $WWWUSER sail
+fi
+
+if [ ! -d /.composer ]; then
+    mkdir /.composer
+fi
+
+chmod -R ugo+rw /.composer
+
+# Adicione essa parte para substituir as variáveis no arquivo de configuração do Apache
+envsubst < /etc/apache2/sites-available/000-default.conf.template > /etc/apache2/sites-available/000-default.conf
+
+# Sua lógica existente
+if [ $# -gt 0 ]; then
+    exec gosu $WWWUSER "$@"
+else
+    # exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
+    exec /usr/sbin/apache2ctl -D FOREGROUND
+fi
